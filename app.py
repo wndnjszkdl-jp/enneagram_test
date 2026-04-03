@@ -35,40 +35,66 @@ def home():
 
 @app.route("/submit", methods=["POST"])
 def submit():
-    data = request.get_json()
+    try:
+        data = request.get_json()
 
-    name = data.get("name", "").strip()
-    phone = data.get("phone", "").strip()
-    result_type = data.get("result_type")
-    result_name = data.get("result_name", "").strip()
-    result_keyword = data.get("result_keyword", "").strip()
-    result_summary = data.get("result_summary", "").strip()
+        name = data.get("name", "").strip()
+        phone = data.get("phone", "").strip()
+        result_type = data.get("result_type")
+        result_name = data.get("result_name", "").strip()
+        result_keyword = data.get("result_keyword", "").strip()
+        result_summary = data.get("result_summary", "").strip()
 
-    if not name or not phone or not result_type or not result_name:
-        return jsonify({"success": False, "message": "입력값이 부족합니다."}), 400
+        print("받은 데이터:", data)
+        print("name:", name, "phone:", phone, "result_type:", result_type,
+              "result_name:", result_name, "result_keyword:", result_keyword,
+              "result_summary:", result_summary)
 
-    conn = sqlite3.connect(DB_NAME)
-    cur = conn.cursor()
+        if (
+            not name or
+            not phone or
+            result_type is None or
+            not result_name or
+            not result_keyword or
+            not result_summary
+        ):
+            return jsonify({
+                "success": False,
+                "message": "입력값 부족"
+            }), 400
 
-    cur.execute("""
-        INSERT INTO test_results (
-            name, phone, result_type, result_name, result_keyword, result_summary, created_at
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    """, (
-        name,
-        phone,
-        result_type,
-        result_name,
-        result_keyword,
-        result_summary,
-        datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    ))
+        conn = sqlite3.connect(DB_NAME)
+        cur = conn.cursor()
 
-    conn.commit()
-    conn.close()
+        cur.execute("""
+            INSERT INTO test_results
+            (name, phone, result_type, result_name, result_keyword, result_summary, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (
+            name,
+            phone,
+            result_type,
+            result_name,
+            result_keyword,
+            result_summary,
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        ))
 
-    return jsonify({"success": True, "message": "저장 완료!"})
+        conn.commit()
+        conn.close()
+
+        return jsonify({
+            "success": True,
+            "message": "저장 완료"
+        })
+
+    except Exception as e:
+        print("에러 발생:", e)
+
+        return jsonify({
+            "success": False,
+            "message": str(e)
+        }), 500
 
 
 @app.route("/list")
