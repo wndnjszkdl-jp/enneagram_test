@@ -155,7 +155,9 @@ body.theme-result {
   text-align: left;
   margin-bottom: 22px;
 }
-
+.question-text {
+  white-space: pre-line;
+}
 .type-mini-grid div {
   background: #ffffff;
   border: 1px solid #edf1f4;
