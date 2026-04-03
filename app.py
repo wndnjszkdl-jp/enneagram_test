@@ -3,7 +3,6 @@ import sqlite3
 from datetime import datetime
 
 app = Flask(__name__)
-init_db()
 
 DB_NAME = "enneagram.db"
 
@@ -27,6 +26,9 @@ def init_db():
 
     conn.commit()
     conn.close()
+
+
+init_db()
 
 
 @app.route("/")
@@ -116,5 +118,4 @@ def list_data():
 
 
 if __name__ == "__main__":
-    init_db()
     app.run(debug=True)
