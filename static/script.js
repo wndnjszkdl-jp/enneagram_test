@@ -369,7 +369,8 @@ function showResult() {
     ...result
   };
 
-  resultNumber.textContent = topType;
+  document.getElementById("result-character").src =
+  `/static/images/type${topType}.png`;
   resultName.textContent = `${topType}. ${result.name}`;
   resultKeyword.textContent = result.keyword;
   resultSummary.textContent = result.summary;
